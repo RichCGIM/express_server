@@ -1,0 +1,19 @@
+Express tutorial
+----------------
+
+1. Install Git Bash
+2. Install Nodejs
+
+- install 		https://expressjs.com/en/starter/installing.html
+1	mkdir express_server
+2	cd express_server/
+3	npm init
+4	entry point: app.js
+5	npm install express --save
+
+- hello world	https://expressjs.com/en/starter/hello-world.html
+1	Open folder in VSC
+2	do the code
+3	In console do node app.js
+4	Install https://www.npmjs.com/package/nodemon
+
