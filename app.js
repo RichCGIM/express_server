@@ -1,17 +1,70 @@
+// import required modules
 const express = require('express');
 const cors = require('cors');
+const mysql = require('mysql');
 const app = express();
 app.use(cors());
 const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World! How are you? How are you?')
+// Makes it easier to read JSON
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'rootroot',
+  database: 'expressdb'
 })
 
-app.get('/test', (req, res) => {
-  res.send("This is a message from the server! It has now changed")
+// Get All Students
+app.get('/students', (req, res) => {
+  console.log("Fetching all students ...")
+
+  connection.query('SELECT * FROM student', (err, rows) => {
+    if (err) throw err;
+    res.json(rows);
+  });
 })
 
+// Get Student By Id
+app.get('/students/:id', (req, res) => {
+  const id = req.params.id;
+  console.log(`Fetching student with id ${id}...`);
+
+  connection.query(
+    `SELECT * FROM student WHERE id = ${id}`, 
+    (err, rows) => {
+      if (err) throw err;
+      res.json(rows);
+    });
+})
+
+// Create a Student
+app.post('/students', (req, res) => {
+  console.log(`Creating student ... `)
+ 
+  connection.query(
+    `INSERT INTO student (name, sex) VALUES ('${req.body.name}','${req.body.sex}')`,
+    (err, rows) => {
+      if (err) throw err;
+      res.send(rows);
+    });
+});
+
+// Delete a student
+app.delete('/students/:id', (req, res) => {
+  console.log(`Delete student id [${req.params.id}]... `)
+
+  connection.query(
+    `DELETE FROM student WHERE id = ${req.params.id}`,
+    (err, rows) => {
+      if (err) throw err;
+      res.send(rows);
+    });
+});
+
+// Listen
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Student app listening at http://localhost:${port}`)
 })
