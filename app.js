@@ -21,14 +21,19 @@ const connection = mysql.createConnection({
 app.get('/students', (req, res) => {
   console.log("Fetching all students ...")
 
-  connection.query('SELECT * FROM student', (err, rows) => {
+  const sql = 'SELECT * FROM student'
+  connection.query(sql, (err, rows) => {
     if (err) throw err;
     res.json(rows);
   });
 })
 
 // Get Student By Id
+// students/7
 app.get('/students/:id', (req, res) => {
+
+  console.log('params:', req.params);
+
   const id = req.params.id;
   console.log(`Fetching student with id ${id}...`);
 
@@ -43,6 +48,8 @@ app.get('/students/:id', (req, res) => {
 // Create a Student
 app.post('/students', (req, res) => {
   console.log(`Creating student ... `)
+
+  console.log('body', req.body)
  
   connection.query(
     `INSERT INTO student (name, sex) VALUES ('${req.body.name}','${req.body.sex}')`,
