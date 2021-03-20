@@ -14,18 +14,23 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'rootroot',
-  database: 'expressdb'
+  database: 'expressdb',
+  port: 3306
 })
 
 // Get All Students
 app.get('/students', (req, res) => {
+
   console.log("Fetching all students ...")
 
   const sql = 'SELECT * FROM student'
   connection.query(sql, (err, rows) => {
     if (err) throw err;
+    console.log('rows', rows);
     res.json(rows);
   });
+
+  console.log('This is after going to the database!');
 })
 
 // Get Student By Id
@@ -45,6 +50,24 @@ app.get('/students/:id', (req, res) => {
     });
 })
 
+// Login
+app.post('/login', (req, res) => {
+  console.log('trying to login!')
+
+  connection.query(
+    'do the sql!',
+    (err, rows) => {
+      if (err) throw err;
+
+      if (rows.length !== 1) {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    }
+  )
+})
+
 // Create a Student
 app.post('/students', (req, res) => {
   console.log(`Creating student ... `)
@@ -57,6 +80,21 @@ app.post('/students', (req, res) => {
       if (err) throw err;
       res.send(rows);
     });
+});
+
+// Update a Student
+app.put('/students/:id', (req, res) => {
+  console.log('params:', req.params);
+  const id = req.params.id;
+  console.log("body:", req.body)
+
+  connection.query(
+      `UPDATE student SET name = '${req.body.name}', sex = '${req.body.sex}' ` +
+      `WHERE id = ${id}`,
+      (err, rows) => {
+        if (err) throw err;
+        res.send(rows);
+      });
 });
 
 // Delete a student
@@ -72,6 +110,7 @@ app.delete('/students/:id', (req, res) => {
 });
 
 // Listen
+// localhost => 127.0.0.1
 app.listen(port, () => {
   console.log(`Student app listening at http://localhost:${port}`)
 })
